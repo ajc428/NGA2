@@ -1149,10 +1149,10 @@ contains
    !> semi-lagrangian momentum fluxes using a provided volume fraction solver,
    !> and zeros out the modified velocity interpolation to avoid double-calc later
    subroutine prepare_advection_semilag(this,dt,vf)
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       implicit none
       class(tpns), intent(inout) :: this   !< The two-phase flow solver
-      class(vfs),  intent(inout) :: vf     !< The volume fraction solver
+      class(vfs_base),  intent(inout) :: vf     !< The volume fraction solver
       real(WP),    intent(inout) :: dt     !< Timestep size over which to advance
       ! integer :: i,j,k,ii,jj,kk,index
       ! real(IRL_double), dimension(3,9) :: face
@@ -1700,12 +1700,12 @@ contains
    !> Add surface tension jump term using CSF
    subroutine add_surface_tension_jump(this,dt,div,vf,contact_model)
       use messager,  only: die
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       implicit none
       class(tpns), intent(inout) :: this
       real(WP), intent(inout) :: dt     !< Timestep size over which to advance
       real(WP), dimension(this%cfg%imino_:,this%cfg%jmino_:,this%cfg%kmino_:), intent(inout) :: div  !< Needs to be (imino_:imaxo_,jmino_:jmaxo_,kmino_:kmaxo_)
-      class(vfs), intent(inout) :: vf
+      class(vfs_base), intent(inout) :: vf
       integer, intent(in), optional :: contact_model
       integer :: i,j,k
       real(WP) :: mycurv,mysurf
@@ -1780,13 +1780,13 @@ contains
    !> Account for thin regions
    subroutine add_surface_tension_jump_thin(this,dt,div,vf)
       use messager,  only: die
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       use irl_fortran_interface
       implicit none
       class(tpns), intent(inout) :: this
       real(WP), intent(inout) :: dt     !< Timestep size over which to advance
       real(WP), dimension(this%cfg%imino_:,this%cfg%jmino_:,this%cfg%kmino_:), intent(inout) :: div  !< Needs to be (imino_:imaxo_,jmino_:jmaxo_,kmino_:kmaxo_)
-      class(vfs), intent(inout) :: vf
+      class(vfs_base), intent(inout) :: vf
       integer :: i,j,k,n,np1,np2,ind
       real(WP) :: mycurv,mysurf
       real(WP), dimension(3) :: n1,n2,nf
@@ -1939,13 +1939,13 @@ contains
    !> Account for thin regions by using building two VF fields
    subroutine add_surface_tension_jump_twoVF(this,dt,div,vf)
       use messager,  only: die
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       use irl_fortran_interface
       implicit none
       class(tpns), intent(inout) :: this
       real(WP), intent(inout) :: dt     !< Timestep size over which to advance
       real(WP), dimension(this%cfg%imino_:,this%cfg%jmino_:,this%cfg%kmino_:), intent(inout) :: div  !< Needs to be (imino_:imaxo_,jmino_:jmaxo_,kmino_:kmaxo_)
-      class(vfs), intent(inout) :: vf
+      class(vfs_base), intent(inout) :: vf
       integer :: i,j,k,ii,jj,kk,n,np1,np2,cn
       integer, dimension(2,2) :: plane_ind
       real(WP), dimension(2,2) :: VF2p,curv2p,surf2p
@@ -3270,11 +3270,11 @@ contains
    
    !> Prepare viscosity arrays from vfs object
    subroutine get_viscosity(this,vf,strat)
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       use messager,  only: die
       implicit none
       class(tpns), intent(inout) :: this
-      class(vfs), intent(in) :: vf
+      class(vfs_base), intent(in) :: vf
       integer :: i,j,k,mystrat
       real(WP) :: liq_vol,gas_vol,tot_vol
       integer, optional :: strat
@@ -3363,10 +3363,10 @@ contains
    
    !> Prepare old density arrays from vfs object
    subroutine get_olddensity(this,vf)
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       implicit none
       class(tpns), intent(inout) :: this
-      class(vfs), intent(in) :: vf
+      class(vfs_base), intent(in) :: vf
       integer :: i,j,k
       real(WP) :: liq_vol,gas_vol,tot_vol
       ! Calculate rho_U/V/Wold using subcell phasic volumes
@@ -3424,11 +3424,11 @@ contains
    !> Add a static contact line model
    subroutine add_static_contact(this,vf)
       use mathtools, only: normalize
-      use vfs_class, only: vfs
+      use vfs_data_class, only: vfs_base
       use irl_fortran_interface
       implicit none
       class(tpns), intent(inout) :: this
-      class(vfs),  intent(in) :: vf
+      class(vfs_base),  intent(in) :: vf
       integer :: i,j,k
       real(WP), dimension(3) :: nw
       real(WP), dimension(2) :: fvof
